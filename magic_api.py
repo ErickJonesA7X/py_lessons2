@@ -11,8 +11,7 @@ response = """{
       ],
       "manaCost":"{3}{W}{W}",
       "cmc":5,
-      "colors":[  
-          "White"
+      "colors":["White"
       ],
       "colorIdentity":[
           "W"
