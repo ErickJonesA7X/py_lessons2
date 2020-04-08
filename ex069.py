@@ -1,3 +1,4 @@
+fim = 'FIM DO PROGRAMA'
 titulo = 'CADASTRE UMA PESSOA'
 print('-'*30)
 print(f'{titulo:^30}')
@@ -24,6 +25,7 @@ while True:
         resp = str(input('Quer continuar? [S/N]: ')).strip().upper()[0]
     if resp == 'N':
         break
+print(f'{fim:=^30}')
 print(f'Total de pessoas com mais de 18 anos: {tot18}')
 print(f'Ao todo temos {homem} homens cadastrados.')
 print(f'E temos {mulher20} mulher(es) com menos de 20 anos.')
