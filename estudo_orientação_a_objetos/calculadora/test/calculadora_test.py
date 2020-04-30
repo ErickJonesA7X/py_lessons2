@@ -1,4 +1,4 @@
-from Estudo_Orientação_a_Objetos.calculadora import calculadora
+from estudo_orientação_a_objetos.calculadora import calculadora
 
 from unittest import TestCase
 
