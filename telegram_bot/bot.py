@@ -1,6 +1,6 @@
 from telegram.ext import Updater
 from telegram.ext import CommandHandler
-from telegram_bot.telegram_bot import magic_api
+from telegram_bot import magic_api
 
 updater = Updater(token='1156666119:AAETH8I5jJJYoe9JUQIXC7QVpjRyq0Q1Dx0', use_context=True)
 
