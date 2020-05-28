@@ -6,8 +6,17 @@ from mtgsdk import Card
 # cards = Card.where(name='avacyn').all()
 
 # exact name match
+class CardC:
+
+    def __init__(self, image, oracle):
+        self.image_url = image
+        self.text = oracle
+
+sol_ring = CardC('http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid=637&type=card', '{T}: Add {C}{C}.')
+
 
 cache = dict()
+cache['Sol Ring'] = sol_ring
 
 
 def get_card_image_url_by_name(name):
@@ -17,6 +26,7 @@ def get_card_image_url_by_name(name):
     for c in cards:
         if c.image_url:
             cache[name] = c
+
             return c.image_url
 
 
