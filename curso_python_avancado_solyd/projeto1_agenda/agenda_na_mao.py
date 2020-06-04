@@ -15,9 +15,9 @@ AGENDA = {
         'endereco': 'av.3'
     },
     'erick': {
-        'tel': '98001-8646',
-        'email': 'jonescomercial@gmail.com',
-        'endereco': 'rua tejo, 45'
+        'tel': '98798-4561',
+        'email': 'role@role.com',
+        'endereco': 'av.8'
     }
 }
 
