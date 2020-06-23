@@ -15,4 +15,4 @@ while True:
     print('Euro:', cotacao['EUR']['ask'])
     print('Bitcoin:', cotacao['BTC']['ask'])
     print('=-'*20)
-    time.sleep(1800)
+    time.sleep(3)
