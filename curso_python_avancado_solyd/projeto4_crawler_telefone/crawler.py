@@ -1,3 +1,6 @@
+import re
+import threading
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -5,6 +8,8 @@ from bs4 import BeautifulSoup
 DOMINIO = 'https://django-anuncios.solyd.com.br'
 URL_AUTOMOVEIS = "https://django-anuncios.solyd.com.br/automoveis/"
 
+LINKS = []
+TELEFONES = []
 
 def requisicao(url):
     try:
@@ -28,33 +33,82 @@ def parsing(resposta_html):
 
 
 def encontrar_links(soup):
-    cards_pai = soup.find("div", class_="ui three doubling link cards")
-    cards = cards_pai.find_all('a')
+    try:
+        cards_pai = soup.find("div", class_="ui three doubling link cards")
+        cards = cards_pai.find_all('a')
+    except:
+        print('Erro ao encontrar links')
 
     links = []
     for card in cards:
-        link = card['href']
-        links.append(link)
+        try:
+            link = card['href']
+            links.append(link)
+        except:
+            pass
 
     return links
 
 
 def encontrar_telefone(soup):
-    colunas = soup.find_all('div', class_='sixteen wide column')
-    print(colunas[2])
+    try:
+        descricao = soup.find_all('div', class_='sixteen wide column')[2].p.get_text().strip()
+    except:
+        print('Erro ao encontrar descrição')
+        return None
+
+    regex = re.findall(r"\(?0?([1-9]{2})[ \-\.\)]{0,2}(9[ \-\.]?\d{4})[ \-\.]?(\d{4})", descricao)
+    if regex:
+        return regex
 
 
+def descobrir_telefones():
+    while True:
+        try:
+            link_anuncio = LINKS.pop(0)
+        except:
+            return None
 
+        resposta_anuncio = requisicao(DOMINIO + link_anuncio)
 
-resposta_busca = requisicao(URL_AUTOMOVEIS)
-if resposta_busca:
-    soup_busca = parsing(resposta_busca)
-    if soup_busca:
-        links = encontrar_links(soup_busca)
-        resposta_anuncio = requisicao(DOMINIO + links[0])
         if resposta_anuncio:
             soup_anuncio = parsing(resposta_anuncio)
             if soup_anuncio:
-                encontrar_telefone(soup_anuncio)
+                telefones = encontrar_telefone(soup_anuncio)
+                if telefones:
+                    for telefone in telefones:
+                        print('Telefone encontrado:', telefone)
+                        TELEFONES.append((telefone))
+                        salvar_telefone(telefone)
 
-# \(?0?([1-9]{2})[ \-\.\)]{0,2}(9[ \-\.]?\d{4})[ \-\.]?(\d{4})
+
+def salvar_telefone(telefone):
+    string_telefone = f'({telefone[0]}){telefone[1]}-{telefone[2]}\n'
+    try:
+        with open('telefones.csv', 'a') as arquivo:
+            arquivo.write(string_telefone)
+    except Exception as error:
+        print('Erro ao salvar arquivo')
+        print(error)
+
+
+if __name__ == '__main__':
+    resposta_busca = requisicao(URL_AUTOMOVEIS)
+    if resposta_busca:
+        soup_busca = parsing(resposta_busca)
+        if soup_busca:
+            LINKS = encontrar_links(soup_busca)
+
+            THREADS = []
+            for i in range(10):
+                t = threading.Thread(target=descobrir_telefones)
+                THREADS.append(t)
+
+            for t in THREADS:
+                t.start()
+
+            for t in THREADS:
+                t.join()
+
+
+
